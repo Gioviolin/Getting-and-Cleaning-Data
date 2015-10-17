@@ -2,6 +2,16 @@
 
 This code book summarizes the resulting data fields in `Tidy.txt`.
 
+## Initial data
+
+The data corresponds to the results of an experiment carried out with a group of 30 volunteers. Each person performed six activities (WALKING, WALKING_UPSTAIRS, WALKING_DOWNSTAIRS, SITTING, STANDING, LAYING) wearing a Samsung Galaxy S II. For each record it is provided:
+
+## Processed Data
+
+In order to use more human-friendly names, the built-in funcion gsub() has been repeatedly used in order to make changes like for example:
+
+tBodyAcc-mean()-Y --> TimeBodyAcceleratorMeanY
+
 ## Identifiers
 
 * `participants` - The ID of the test subject
