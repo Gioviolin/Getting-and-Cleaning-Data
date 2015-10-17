@@ -1,27 +1,14 @@
-## Settings and preprocessing
+# Read in the data from files
 
-if (!getwd() == "./out-of-box-samples") {
-  dir.create("./out-of-box-samples")
-}
+YTest <- read.table("UCI HAR Dataset/test/y_test.txt")
+XTest <- read.table("UCI HAR Dataset/test/X_test.txt")
+SubjectTest <- read.table("UCI HAR Dataset/test/subject_test.txt")
+YTrain <- read.table("UCI HAR Dataset/train/y_train.txt")
+XTrain <- read.table("UCI HAR Dataset/train/X_train.txt")
+SubjectTrain <- read.table("UCI HAR Dataset/train/subject_train.txt")
+Features <- read.table("UCI HAR Dataset/features.txt")
 
-rm(list = ls(all = TRUE))
-library(plyr) 
-library(data.table) 
-library(dplyr) 
-
-temp <- tempfile()
-download.file("http://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip",temp)
-unzip(temp, list = TRUE)
-YTest <- read.table(unzip(temp, "UCI HAR Dataset/test/y_test.txt"))
-XTest <- read.table(unzip(temp, "UCI HAR Dataset/test/X_test.txt"))
-SubjectTest <- read.table(unzip(temp, "UCI HAR Dataset/test/subject_test.txt"))
-YTrain <- read.table(unzip(temp, "UCI HAR Dataset/train/y_train.txt"))
-XTrain <- read.table(unzip(temp, "UCI HAR Dataset/train/X_train.txt"))
-SubjectTrain <- read.table(unzip(temp, "UCI HAR Dataset/train/subject_train.txt"))
-Features <- read.table(unzip(temp, "UCI HAR Dataset/features.txt"))
-unlink(temp)
-
-# Cleaning Data
+# Assign Names
 
 colnames(XTrain) <- t(Features[2])
 colnames(XTest) <- t(Features[2])
@@ -35,80 +22,76 @@ XTest$participants <- SubjectTest[, 1]
 
 # Merges the training and the test sets to create one data set.
 
-Master <- rbind(XTrain, XTest)
-duplicated(colnames(Master))
-Master <- Master[, !duplicated(colnames(Master))]
+DataSet <- rbind(XTrain, XTest)
+duplicated(colnames(DataSet))
+DataSet <- DataSet[, !duplicated(colnames(DataSet))]
 
 # Extracts only the measurements on the mean and standard deviation for each measurement.
 
-Mean <- grep("mean()", names(Master), value = FALSE, fixed = TRUE)
-
-#In addition, we need to include 555:559 as they have means and are associated with the gravity terms
-Mean <- append(Mean, 471:477)
-InstrumentMeanMatrix <- Master[Mean]
-
-# For STD
-STD <- grep("std()", names(Master), value = FALSE)
-InstrumentSTDMatrix <- Master[STD]
+Mean <- grep("mean()", names(DataSet), value = FALSE, fixed = TRUE)
+OnlyMeans <- DataSet[Mean]
+STD <- grep("std()", names(DataSet), value = FALSE)
+OnlySTD <- DataSet[STD]
 
 # Uses descriptive activity names to name the activities in the data set
 
-Master$activities <- as.character(Master$activities)
-Master$activities[Master$activities == 1] <- "Walking"
-Master$activities[Master$activities == 2] <- "Walking Upstairs"
-Master$activities[Master$activities == 3] <- "Walking Downstairs"
-Master$activities[Master$activities == 4] <- "Sitting"
-Master$activities[Master$activities == 5] <- "Standing"
-Master$activities[Master$activities == 6] <- "Laying"
-Master$activities <- as.factor(Master$activities)
+DataSet$activities <- as.character(DataSet$activities)
+DataSet$activities[DataSet$activities == 1] <- "Walking"
+DataSet$activities[DataSet$activities == 2] <- "Walking Upstairs"
+DataSet$activities[DataSet$activities == 3] <- "Walking Downstairs"
+DataSet$activities[DataSet$activities == 4] <- "Sitting"
+DataSet$activities[DataSet$activities == 5] <- "Standing"
+DataSet$activities[DataSet$activities == 6] <- "Laying"
+DataSet$activities <- as.factor(DataSet$activities)
 
 # Appropriately labels the data set with descriptive variable names.
 
-names(Master) <- gsub("Acc", "Accelerator", names(Master))
-names(Master) <- gsub("Mag", "Magnitude", names(Master))
-names(Master) <- gsub("Gyro", "Gyroscope", names(Master))
-names(Master) <- gsub("^t", "time", names(Master))
-names(Master) <- gsub("^f", "frequency", names(Master))
+names(DataSet) <- gsub("Acc", "Accelerator", names(DataSet))
+names(DataSet) <- gsub("Mag", "Magnitude", names(DataSet))
+names(DataSet) <- gsub("Gyro", "Gyroscope", names(DataSet))
+names(DataSet) <- gsub("^t", "Time", names(DataSet))
+names(DataSet) <- gsub("^f", "Frequency", names(DataSet))
+names(DataSet) <- gsub("-mean\\(\\)", "Mean", names(DataSet))
+names(DataSet) <- gsub("-std\\(\\)", "StdDev", names(DataSet))
 
-Master$participants <- as.character(Master$participants)
-Master$participants[Master$participants == 1] <- "Participant 1"
-Master$participants[Master$participants == 2] <- "Participant 2"
-Master$participants[Master$participants == 3] <- "Participant 3"
-Master$participants[Master$participants == 4] <- "Participant 4"
-Master$participants[Master$participants == 5] <- "Participant 5"
-Master$participants[Master$participants == 6] <- "Participant 6"
-Master$participants[Master$participants == 7] <- "Participant 7"
-Master$participants[Master$participants == 8] <- "Participant 8"
-Master$participants[Master$participants == 9] <- "Participant 9"
-Master$participants[Master$participants == 10] <- "Participant 10"
-Master$participants[Master$participants == 11] <- "Participant 11"
-Master$participants[Master$participants == 12] <- "Participant 12"
-Master$participants[Master$participants == 13] <- "Participant 13"
-Master$participants[Master$participants == 14] <- "Participant 14"
-Master$participants[Master$participants == 15] <- "Participant 15"
-Master$participants[Master$participants == 16] <- "Participant 16"
-Master$participants[Master$participants == 17] <- "Participant 17"
-Master$participants[Master$participants == 18] <- "Participant 18"
-Master$participants[Master$participants == 19] <- "Participant 19"
-Master$participants[Master$participants == 20] <- "Participant 20"
-Master$participants[Master$participants == 21] <- "Participant 21"
-Master$participants[Master$participants == 22] <- "Participant 22"
-Master$participants[Master$participants == 23] <- "Participant 23"
-Master$participants[Master$participants == 24] <- "Participant 24"
-Master$participants[Master$participants == 25] <- "Participant 25"
-Master$participants[Master$participants == 26] <- "Participant 26"
-Master$participants[Master$participants == 27] <- "Participant 27"
-Master$participants[Master$participants == 28] <- "Participant 28"
-Master$participants[Master$participants == 29] <- "Participant 29"
-Master$participants[Master$participants == 30] <- "Participant 30"
-Master$participants <- as.factor(Master$participants)
+# Labeling the Participants
+
+DataSet$activities <- as.character(DataSet$activities)
+DataSet$activities[DataSet$activities == 1] <- "Participant 1"
+DataSet$activities[DataSet$activities == 2] <- "Participant 2"
+DataSet$activities[DataSet$activities == 3] <- "Participant 3"
+DataSet$activities[DataSet$activities == 4] <- "Participant 4"
+DataSet$activities[DataSet$activities == 5] <- "Participant 5"
+DataSet$activities[DataSet$activities == 6] <- "Participant 6"
+DataSet$activities[DataSet$activities == 7] <- "Participant 7"
+DataSet$activities[DataSet$activities == 8] <- "Participant 8"
+DataSet$activities[DataSet$activities == 9] <- "Participant 9"
+DataSet$activities[DataSet$activities == 10] <- "Participant 10"
+DataSet$activities[DataSet$activities == 11] <- "Participant 11"
+DataSet$activities[DataSet$activities == 12] <- "Participant 12"
+DataSet$activities[DataSet$activities == 13] <- "Participant 13"
+DataSet$activities[DataSet$activities == 14] <- "Participant 14"
+DataSet$activities[DataSet$activities == 15] <- "Participant 15"
+DataSet$activities[DataSet$activities == 16] <- "Participant 16"
+DataSet$activities[DataSet$activities == 17] <- "Participant 17"
+DataSet$activities[DataSet$activities == 18] <- "Participant 18"
+DataSet$activities[DataSet$activities == 19] <- "Participant 19"
+DataSet$activities[DataSet$activities == 20] <- "Participant 20"
+DataSet$activities[DataSet$activities == 21] <- "Participant 21"
+DataSet$activities[DataSet$activities == 22] <- "Participant 22"
+DataSet$activities[DataSet$activities == 23] <- "Participant 23"
+DataSet$activities[DataSet$activities == 24] <- "Participant 24"
+DataSet$activities[DataSet$activities == 25] <- "Participant 25"
+DataSet$activities[DataSet$activities == 26] <- "Participant 26"
+DataSet$activities[DataSet$activities == 27] <- "Participant 27"
+DataSet$activities[DataSet$activities == 28] <- "Participant 28"
+DataSet$activities[DataSet$activities == 29] <- "Participant 29"
+DataSet$activities[DataSet$activities == 30] <- "Participant 30"
+DataSet$participants <- as.factor(DataSet$participants)
 
 #Create a tidy data set
 
-Master.dt <- data.table(Master)
+DataSet.dt <- data.table(DataSet)
 
-
-#This takes the mean of every column broken down by participants and activities
-
-TidyData <- Master.dt[, lapply(.SD, mean), by = 'participants,activities']
+TidyData <- DataSet.dt[, lapply(.SD, mean), by = 'participants, activities']
 write.table(TidyData, file = "Tidy.txt", row.names = FALSE)
