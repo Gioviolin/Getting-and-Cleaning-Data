@@ -1,3 +1,5 @@
+## Pre-Assignment
+
 # Read in the data from files
 
 YTest <- read.table("UCI HAR Dataset/test/y_test.txt")
@@ -8,7 +10,7 @@ XTrain <- read.table("UCI HAR Dataset/train/X_train.txt")
 SubjectTrain <- read.table("UCI HAR Dataset/train/subject_train.txt")
 Features <- read.table("UCI HAR Dataset/features.txt")
 
-# Assign Names
+# Assign Variables and names
 
 colnames(XTrain) <- t(Features[2])
 colnames(XTest) <- t(Features[2])
@@ -46,7 +48,7 @@ DataSet$activities <- as.factor(DataSet$activities)
 
 # 4) Appropriately labels the data set with descriptive variable names.
 
-# Labeling variables
+# Labeling the variables
 
 names(DataSet) <- gsub("Acc", "Accelerator", names(DataSet))
 names(DataSet) <- gsub("Mag", "Magnitude", names(DataSet))
