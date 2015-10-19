@@ -10,10 +10,12 @@ XTrain <- read.table("UCI HAR Dataset/train/X_train.txt")
 SubjectTrain <- read.table("UCI HAR Dataset/train/subject_train.txt")
 Features <- read.table("UCI HAR Dataset/features.txt")
 
-# Assign Variables and names
+# Assign Columns Names
 
 colnames(XTrain) <- t(Features[2])
 colnames(XTest) <- t(Features[2])
+
+# It's having faith the merge of X and Y Train set allign since there is no common ID
 
 XTrain$activities <- YTrain[, 1]
 XTrain$participants <- SubjectTrain[, 1]
