@@ -59,6 +59,7 @@ names(DataSet) <- gsub("-mean\\(\\)", "Mean", names(DataSet))
 names(DataSet) <- gsub("-std\\(\\)", "StdDev", names(DataSet))
 
 # Labeling the Participants
+# I played for a while trying to use loop here but didn't work, I'm curious how to do that, if you know please comment on the evaluation
 
 DataSet$activities <- as.character(DataSet$activities)
 DataSet$activities[DataSet$activities == 1] <- "Participant 01"
