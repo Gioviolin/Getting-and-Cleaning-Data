@@ -1,6 +1,6 @@
 # Getting-and-Cleaning-Data
 
-Such a difficult course... I only just learned R a month ago... I needed to look for 6-10 different scripts in order to understand what to do.
+The dataset consist of taking the readings of 30 people for various activities while wearing accelerator and gyroscope. The data is primarily technical readings from these items. The data is divided into training and testing set for predictive purposes. For this exercise, we are aggregating the data.
 
 ## Description of the Data
 http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones
